@@ -1,0 +1,7 @@
+octoparse
+gspread
+google-auth
+google-auth-oauthlib
+google-api-python-client
+pandas
+python-dotenv
