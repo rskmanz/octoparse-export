@@ -5,9 +5,9 @@ Octoparse のタスクデータを取得し、Google Drive に CSV 形式でエ�
 ## 機能
 
 - Google Spreadsheet からタスク ID を読み込み
-- Octoparse API からデータを取得
+- Octoparse API からタスク名を自動取得
 - CSV ファイルとして Google Drive にアップロード
-- 処理結果を Spreadsheet に記録
+- 処理結果を Spreadsheet に日本語で記録
 
 ## セットアップ
 
@@ -46,10 +46,9 @@ python main.py <spreadsheet_url>
 
 ### Spreadsheet の準備
 
-| task_id | task_name |
-|---------|-----------|
-| xxx-xxx | Task 1 |
-| yyy-yyy | Task 2 |
+| タスクID | タスク名 |
+|----------|----------|
+| xxx-xxx  | (空欄でOK - 自動取得) |
 
 ### 実行
 
@@ -64,9 +63,45 @@ python main.py "<spreadsheet_url>" "<folder_id>"
 
 ```
 Google Drive/
-└── [Task Name]/
+└── [タスク名]/
     └── [timestamp]/
         └── data.csv
+```
+
+### Spreadsheet 結果
+
+| タスクID | タスク名 | ステータス | ファイル場所 | レコード数 | 更新日時 |
+|----------|----------|------------|--------------|------------|----------|
+| xxx-xxx  | Task1    | Success    | [Drive URL]  | 1000       | 2025-... |
+
+## Docker
+
+### ビルド
+
+```bash
+docker build -t octoparse-export .
+```
+
+### 実行
+
+```bash
+# 認証ファイルをマウントして実行
+docker run -v $(pwd)/.env:/app/.env \
+           -v $(pwd)/client_secret.json:/app/client_secret.json \
+           -v $(pwd)/token.json:/app/token.json \
+           octoparse-export \
+           python main.py "<spreadsheet_url>" "<folder_id>"
+```
+
+### Docker Compose
+
+```bash
+# 環境変数を設定
+export SPREADSHEET_URL="https://docs.google.com/spreadsheets/d/xxx"
+export FOLDER_ID="1GpKhRS6aG1_slnA69P-xBiS-5QwtZaEr"
+
+# 実行
+docker-compose up
 ```
 
 ## ファイル構成
@@ -79,6 +114,8 @@ octoparse_export/
 ├── google_drive.py      # Google Drive API
 ├── octoparse_client.py  # Octoparse API
 ├── requirements.txt     # 依存関係
+├── Dockerfile           # Docker設定
+├── docker-compose.yml   # Docker Compose設定
 ├── .env                 # 認証情報（gitignore）
 ├── client_secret.json   # OAuth クライアント（gitignore）
 └── token.json           # OAuth トークン（自動生成、gitignore）

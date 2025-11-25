@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  octoparse-export:
+    build: .
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./client_secret.json:/app/client_secret.json:ro
+      - ./token.json:/app/token.json:ro
+    environment:
+      - SPREADSHEET_URL=${SPREADSHEET_URL}
+      - FOLDER_ID=${FOLDER_ID}
+    command: python main.py "${SPREADSHEET_URL}" "${FOLDER_ID}"
