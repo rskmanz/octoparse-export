@@ -27,6 +27,19 @@ def process_task(task: dict, octoparse: OctoparseClient,
     task_name = task['task_name']
     row_number = task['row_number']
 
+    # Fetch task name from Octoparse if not provided
+    if not task_name:
+        print(f"\n[FETCHING] Getting task name for ID: {task_id}")
+        task_name = octoparse.get_task_name(task_id)
+        if task_name:
+            print(f"  [OK] Task name: {task_name}")
+            # Update spreadsheet with task name
+            spreadsheet = sheets.client.open_by_url(spreadsheet_url)
+            worksheet = spreadsheet.sheet1
+            worksheet.update_cell(row_number, 2, task_name)
+        else:
+            task_name = task_id[:20]  # Use truncated ID as fallback
+
     print(f"\n[PROCESSING] Task: {task_name} (ID: {task_id})")
 
     result = {

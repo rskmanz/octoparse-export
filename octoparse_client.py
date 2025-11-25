@@ -26,3 +26,13 @@ class OctoparseClient:
     def list_tasks(self, group_id: str):
         """List tasks in a group"""
         return self.client.list_all_tasks_in_group(group_id)
+
+    def get_task_name(self, task_id: str) -> str:
+        """Get task name by task ID"""
+        groups = self.client.list_all_task_groups()
+        for group in groups:
+            tasks = self.client.list_all_tasks_in_group(group['taskGroupId'])
+            for task in tasks:
+                if task['taskId'] == task_id:
+                    return task.get('taskName', '')
+        return ''
