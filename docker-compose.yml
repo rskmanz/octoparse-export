@@ -4,10 +4,11 @@ services:
   octoparse-export:
     build: .
     volumes:
-      - ./.env:/app/.env:ro
       - ./client_secret.json:/app/client_secret.json:ro
-      - ./token.json:/app/token.json:ro
+      - ./token.json:/app/token.json
     environment:
+      - OCTOPARSE_USERNAME=${OCTOPARSE_USERNAME}
+      - OCTOPARSE_PASSWORD=${OCTOPARSE_PASSWORD}
       - SPREADSHEET_URL=${SPREADSHEET_URL}
       - FOLDER_ID=${FOLDER_ID}
     command: python main.py "${SPREADSHEET_URL}" "${FOLDER_ID}"

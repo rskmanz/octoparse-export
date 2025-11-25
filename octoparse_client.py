@@ -2,8 +2,13 @@
 Octoparse API Client
 """
 
+import os
+from dotenv import load_dotenv
 from octoparse import Octoparse
 import pandas as pd
+
+# Load .env file
+load_dotenv()
 
 
 class OctoparseClient:

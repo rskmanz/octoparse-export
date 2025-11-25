@@ -82,25 +82,52 @@ Google Drive/
 docker build -t octoparse-export .
 ```
 
-### 実行
+**注意**: Dockerfile には修正済み octoparse ライブラリが含まれています。
+
+### 実行（Windows）
+
+```powershell
+# PowerShell で実行
+docker run --rm `
+  -e OCTOPARSE_USERNAME=your_username `
+  -e OCTOPARSE_PASSWORD=your_password `
+  -v "C:/path/to/client_secret.json:/app/client_secret.json:ro" `
+  -v "C:/path/to/token.json:/app/token.json" `
+  octoparse-export `
+  python main.py "<spreadsheet_url>" "<folder_id>"
+```
+
+### 実行（Mac/Linux）
 
 ```bash
-# 認証ファイルをマウントして実行
-docker run -v $(pwd)/.env:/app/.env \
-           -v $(pwd)/client_secret.json:/app/client_secret.json \
-           -v $(pwd)/token.json:/app/token.json \
-           octoparse-export \
-           python main.py "<spreadsheet_url>" "<folder_id>"
+docker run --rm \
+  -e OCTOPARSE_USERNAME=your_username \
+  -e OCTOPARSE_PASSWORD=your_password \
+  -v "$(pwd)/client_secret.json:/app/client_secret.json:ro" \
+  -v "$(pwd)/token.json:/app/token.json" \
+  octoparse-export \
+  python main.py "<spreadsheet_url>" "<folder_id>"
 ```
 
 ### Docker Compose
 
 ```bash
 # 環境変数を設定
+export OCTOPARSE_USERNAME="your_username"
+export OCTOPARSE_PASSWORD="your_password"
 export SPREADSHEET_URL="https://docs.google.com/spreadsheets/d/xxx"
-export FOLDER_ID="1GpKhRS6aG1_slnA69P-xBiS-5QwtZaEr"
+export FOLDER_ID="your_folder_id"
 
 # 実行
+docker-compose up
+```
+
+Windows の場合:
+```powershell
+$env:OCTOPARSE_USERNAME="your_username"
+$env:OCTOPARSE_PASSWORD="your_password"
+$env:SPREADSHEET_URL="https://docs.google.com/spreadsheets/d/xxx"
+$env:FOLDER_ID="your_folder_id"
 docker-compose up
 ```
 
@@ -113,6 +140,7 @@ octoparse_export/
 ├── google_sheets.py     # Google Sheets API
 ├── google_drive.py      # Google Drive API
 ├── octoparse_client.py  # Octoparse API
+├── octoparse_fixed.py   # 修正済み octoparse ライブラリ（Docker用）
 ├── requirements.txt     # 依存関係
 ├── Dockerfile           # Docker設定
 ├── docker-compose.yml   # Docker Compose設定
