@@ -4,9 +4,13 @@ services:
   octoparse-export:
     build: .
     volumes:
+      # OAuth (optional)
       - ./client_secret.json:/app/client_secret.json:ro
       - ./token.json:/app/token.json
+      # Service Account (optional)
+      - ./service_account.json:/app/service_account.json:ro
     environment:
+      - AUTH_METHOD=${AUTH_METHOD:-auto}
       - OCTOPARSE_USERNAME=${OCTOPARSE_USERNAME}
       - OCTOPARSE_PASSWORD=${OCTOPARSE_PASSWORD}
       - SPREADSHEET_URL=${SPREADSHEET_URL}

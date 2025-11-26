@@ -1,6 +1,8 @@
 # Credentials
 token.json
 client_secret.json
+service_account.json
+rejob-internal-*.json
 .env
 
 # Python

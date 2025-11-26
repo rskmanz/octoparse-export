@@ -26,14 +26,35 @@ OCTOPARSE_USERNAME=your_username
 OCTOPARSE_PASSWORD=your_password
 ```
 
-### 3. Google OAuth 設定
+### 3. Google 認証設定（2つの方法から選択）
+
+#### 方法A: サービスアカウント（推奨：Docker/サーバー環境）
+
+1. [Google Cloud Console](https://console.cloud.google.com) でプロジェクト作成
+2. Google Sheets API と Google Drive API を有効化
+3. サービスアカウントを作成し、JSONキーをダウンロード
+4. `service_account.json` として保存
+5. スプレッドシートをサービスアカウントのメールアドレスに共有
+
+#### 方法B: OAuth 2.0（ローカル開発向け）
 
 1. [Google Cloud Console](https://console.cloud.google.com) でプロジェクト作成
 2. Google Sheets API と Google Drive API を有効化
 3. OAuth 2.0 クライアント ID を作成（デスクトップアプリ）
 4. JSON をダウンロードして `client_secret.json` として保存
 
-### 4. 初回認証
+### 4. 認証方法の切り替え
+
+`.env` ファイルで設定:
+
+```
+# 認証方法を選択
+AUTH_METHOD=auto            # 自動（service_account.json があれば優先）
+AUTH_METHOD=service_account # サービスアカウント強制
+AUTH_METHOD=oauth           # OAuth強制
+```
+
+### 5. 初回認証（OAuthの場合のみ）
 
 ```bash
 python main.py <spreadsheet_url>
@@ -136,7 +157,7 @@ docker-compose up
 ```
 octoparse_export/
 ├── main.py              # エントリーポイント
-├── auth.py              # OAuth 認証
+├── auth.py              # 認証（OAuth/サービスアカウント対応）
 ├── google_sheets.py     # Google Sheets API
 ├── google_drive.py      # Google Drive API
 ├── octoparse_client.py  # Octoparse API
@@ -146,6 +167,7 @@ octoparse_export/
 ├── docker-compose.yml   # Docker Compose設定
 ├── .env                 # 認証情報（gitignore）
 ├── client_secret.json   # OAuth クライアント（gitignore）
+├── service_account.json # サービスアカウント（gitignore）
 └── token.json           # OAuth トークン（自動生成、gitignore）
 ```
 
